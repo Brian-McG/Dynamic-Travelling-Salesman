@@ -21,7 +21,7 @@ class Chromosome {
     /**
      * @param cities The order that this chromosome would visit the cities.
      */
-    Chromosome(City[] cities) {
+    Chromosome(City[] cities, boolean randomise) {
         random = new Random();
         cityList = new int[cities.length];
         //cities are visited based on the order of an integer representation [o,n] of each of the n cities.
@@ -29,12 +29,14 @@ class Chromosome {
             cityList[x] = x;
         }
 
-        //shuffle the order so we have a random initial order
-        for (int y = 0; y < cityList.length; y++) {
-            int temp = cityList[y];
-            int randomNum = random.nextInt(cityList.length);
-            cityList[y] = cityList[randomNum];
-            cityList[randomNum] = temp;
+        if(randomise) {
+            //shuffle the order so we have a random initial order
+            for (int y = 0; y < cityList.length; y++) {
+                int temp = cityList[y];
+                int randomNum = random.nextInt(cityList.length);
+                cityList[y] = cityList[randomNum];
+                cityList[randomNum] = temp;
+            }
         }
 
         calculateCost(cities);
@@ -43,11 +45,11 @@ class Chromosome {
     /**
      * Mutates the Chromosome
      */
-    public int[] mutate() {
+    public Chromosome mutate() {
         if(cityList.length <= 1) {
             int[] copy = new int[cityList.length];
             System.arraycopy( cityList.clone(), 0, copy, 0, cityList.length );
-            return copy;
+            return new Chromosome(copy, false);
         }
 
         int x1 = random.nextInt(cityList.length);
@@ -68,7 +70,7 @@ class Chromosome {
         for (int i = x2; i >= x1; --i, ++g) {
             childChromosome[g] = cityList[i];
         }
-        return childChromosome;
+        return new Chromosome(childChromosome, false);
     }
 
     /**

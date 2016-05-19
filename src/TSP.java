@@ -154,7 +154,7 @@ public class TSP {
                         cities[last].gety());
                 }
             }
-                        
+
             int homeCity = chromosomes[0].getCity(0);
             int lastCity = chromosomes[0].getCity(cityCount - 1);
                         
