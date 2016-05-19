@@ -111,8 +111,38 @@ public class TSP {
     }
 
     public static void evolve() {
-        //Write evolution code here.
+        // Get an up-to-date cost of each chromosome
+        for(Chromosome chromosome : chromosomes) {
+            chromosome.calculateCost(cities);
+        }
+
+        double lowestCost = Double.MAX_VALUE;
+        int index = -1;
+        for(int i = 0; i < chromosomes.length; ++i) {
+            if (lowestCost > chromosomes[i].getCost()) {
+                lowestCost = chromosomes[i].getCost();
+                index = i;
+            }
+        }
+
+        Chromosome[] chromosomeMutations = new Chromosome[chromosomes.length * 2];
+        for (int i = 0; i < chromosomes.length; ++i) {
+            int[] mutatedCityOrdering = chromosomes[index].mutate();
+            chromosomeMutations[i] = new Chromosome(cities, mutatedCityOrdering);
+        }
+
+        int g = 0;
+        for (int i = chromosomes.length; i < chromosomes.length * 2; ++i, ++g) {
+            chromosomeMutations[i] = chromosomes[g];
+        }
+
+        Chromosome.sortChromosomes(chromosomeMutations, chromosomeMutations.length);
+
+        for(int i = 0; i < chromosomes.length; ++i) {
+            chromosomes[i] = chromosomeMutations[i];
+        }
     }
+
 
     /**
      * Update the display
@@ -305,6 +335,14 @@ public class TSP {
                             updateGUI();
                         }
                     }
+
+                    for (int i = 0; i < chromosomes[0].cityList.length; i++) {
+                        if (i > 0) {
+                            System.out.print(", ");
+                        }
+                        System.out.print(chromosomes[0].cityList[i]);
+                    }
+                    System.out.println(chromosomes[0].getCost());
 
                     writeLog(genMin + "");
 
