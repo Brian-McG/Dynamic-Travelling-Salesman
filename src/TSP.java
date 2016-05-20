@@ -28,6 +28,11 @@ public class TSP {
     protected static int populationSize = 100; //DO NOT CHANGE THIS.
 
     /**
+     * The part of the population that can be modified
+     */
+    protected static int modifedSize = 99;
+
+    /**
      * The part of the population eligable for mating.
      */
     protected static int matingPopulationSize;
@@ -35,7 +40,7 @@ public class TSP {
     /**
      * The part of the population selected for mating.
      */
-    protected static int selectedParents;
+    protected static int selectedParents = 1;
 
     /**
      * The current generation
@@ -116,30 +121,33 @@ public class TSP {
             chromosome.calculateCost(cities);
         }
 
-        double lowestCost = Double.MAX_VALUE;
-        int index = -1;
-        for(int i = 0; i < chromosomes.length; ++i) {
-            if (lowestCost > chromosomes[i].getCost()) {
-                lowestCost = chromosomes[i].getCost();
-                index = i;
-            }
+        Chromosome.sortChromosomes(chromosomes, chromosomes.length);
+
+        // We want a population of 99 so that we never store > 100 chromosomes at a given time
+        // Remove the worst chromosome if we are storing 100 chromosomes (which is the default)
+        if (chromosomes.length == 100) {
+            chromosomes[99] = null;
         }
 
-        Chromosome[] chromosomeMutations = new Chromosome[chromosomes.length * 2];
+        int g = modifedSize-1;
         for (int i = 0; i < chromosomes.length; ++i) {
-            int[] mutatedCityOrdering = chromosomes[index].mutate();
-            chromosomeMutations[i] = new Chromosome(cities, mutatedCityOrdering);
-        }
+            int[] mutatedCityOrdering = chromosomes[0].mutate();
+            // Generate a Chromosome - Temporarily storing 100 Chromosomes
+            Chromosome mutatedChromosome = new Chromosome(cities, mutatedCityOrdering);
 
-        int g = 0;
-        for (int i = chromosomes.length; i < chromosomes.length * 2; ++i, ++g) {
-            chromosomeMutations[i] = chromosomes[g];
-        }
+            // Get the worst chromosome
+            double highest_cost = Double.MAX_VALUE;
+            int lowest_index = -1;
+            for (int z = modifedSize-1; z >= g; --z) {
+                if(highest_cost < chromosomes[z].getCost()) {
+                    lowest_index = -1;
+                }
+            }
 
-        Chromosome.sortChromosomes(chromosomeMutations, chromosomeMutations.length);
-
-        for(int i = 0; i < chromosomes.length; ++i) {
-            chromosomes[i] = chromosomeMutations[i];
+            // Run an evaluation to see if there is an improvement
+            if (mutatedChromosome.getCost() < chromosomes[lowest_index].getCost()) {
+                chromosomes[g] = mutatedChromosome;
+            }
         }
     }
 
