@@ -1,15 +1,11 @@
-import java.applet.Applet;
 import java.awt.*;
-import java.awt.event.*;
 import java.io.*;
-import java.sql.Time;
+import java.security.SecureRandom;
 import java.text.*;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
-import java.util.Arrays;
 import java.util.ArrayList;
-import java.awt.*; 
 
 import javax.swing.*;
 
@@ -28,6 +24,11 @@ public class TSP {
     protected static int populationSize = 100; //DO NOT CHANGE THIS.
 
     /**
+     * The part of the population that can be modified
+     */
+    protected static int modifiedSize = 99;
+
+    /**
      * The part of the population eligable for mating.
      */
     protected static int matingPopulationSize;
@@ -35,7 +36,7 @@ public class TSP {
     /**
      * The part of the population selected for mating.
      */
-    protected static int selectedParents;
+    protected static int selectedParents = 1;
 
     /**
      * The current generation
@@ -111,35 +112,44 @@ public class TSP {
     }
 
     public static void evolve() {
+        SecureRandom random = new SecureRandom();
+
         // Get an up-to-date cost of each chromosome
-        for(Chromosome chromosome : chromosomes) {
-            chromosome.calculateCost(cities);
+        for(int i = 0; i < modifiedSize; ++i) {
+            chromosomes[i].calculateCost(cities);
         }
 
-        double lowestCost = Double.MAX_VALUE;
-        int index = -1;
-        for(int i = 0; i < chromosomes.length; ++i) {
-            if (lowestCost > chromosomes[i].getCost()) {
-                lowestCost = chromosomes[i].getCost();
-                index = i;
-            }
+        Chromosome.sortChromosomes(chromosomes, modifiedSize);
+
+        // We want a population of 99 so that we never store > 100 chromosomes at a given time
+        // Remove the worst chromosome if we are storing 100 chromosomes (which is the default)
+        if (chromosomes.length == 100) {
+            chromosomes[99] = null;
         }
 
-        Chromosome[] chromosomeMutations = new Chromosome[chromosomes.length * 2];
+        int g = modifiedSize -1;
         for (int i = 0; i < chromosomes.length; ++i) {
-            int[] mutatedCityOrdering = chromosomes[index].mutate();
-            chromosomeMutations[i] = new Chromosome(cities, mutatedCityOrdering);
-        }
+            int[] mutatedCityOrdering;
+            mutatedCityOrdering = chromosomes[0].mutate();
 
-        int g = 0;
-        for (int i = chromosomes.length; i < chromosomes.length * 2; ++i, ++g) {
-            chromosomeMutations[i] = chromosomes[g];
-        }
+            // Generate a Chromosome - Temporarily storing 100 Chromosomes
+            Chromosome mutatedChromosome = new Chromosome(cities, mutatedCityOrdering);
 
-        Chromosome.sortChromosomes(chromosomeMutations, chromosomeMutations.length);
+            /*
+            // Get the worst chromosome
+            double highest_cost = Double.MIN_VALUE;
+            int lowest_index = -1;
+            for (int z = 0; z <= 0; ++z) {
+                if(highest_cost < chromosomes[z].getCost()) {
+                    lowest_index = z;
+                }
+            }
+            */
 
-        for(int i = 0; i < chromosomes.length; ++i) {
-            chromosomes[i] = chromosomeMutations[i];
+            // Only use the mutation if we can get better than the current best chromosome
+            if (mutatedChromosome.getCost() < chromosomes[0].getCost()) {
+                chromosomes[0] = mutatedChromosome;
+            }
         }
     }
 
@@ -317,7 +327,7 @@ public class TSP {
                             cities = MoveCities(originalCities); //Move from original cities, so they only move by a maximum of one unit.
                         generation++;
 
-                        Chromosome.sortChromosomes(chromosomes, populationSize);
+                        Chromosome.sortChromosomes(chromosomes, modifiedSize);
                         double cost = chromosomes[0].getCost();
                         thisCost = cost;
 
