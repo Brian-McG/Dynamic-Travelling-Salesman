@@ -24,11 +24,6 @@ public class TSP {
     protected static int populationSize = 100; //DO NOT CHANGE THIS.
 
     /**
-     * The part of the population that can be modified
-     */
-    protected static int modifiedSize = 99;
-
-    /**
      * The part of the population eligable for mating.
      */
     protected static int matingPopulationSize;
@@ -82,6 +77,8 @@ public class TSP {
     private static Panel statsArea;
     private static TextArea statsText;
 
+    // A safety switch
+
 
     /*
      * Writing to an output file with the costs.
@@ -111,46 +108,36 @@ public class TSP {
         System.out.println(content);
     }
 
+    /**
+     * Executes the evolutionary algorithm
+     */
     public static void evolve() {
-        SecureRandom random = new SecureRandom();
-
         // Get an up-to-date cost of each chromosome
-        for(int i = 0; i < modifiedSize; ++i) {
+        for(int i = 0; i < populationSize; ++i) {
             chromosomes[i].calculateCost(cities);
         }
 
+        // Sort Chromosomes based on cost
         Chromosome.sortChromosomes(chromosomes, chromosomes.length);
 
-        // We want a population of 99 so that we never store > 100 chromosomes at a given time
-        // Remove the worst chromosome if we are storing 100 chromosomes (which is the default)
-        /*
-        if (chromosomes.length == 100) {
-            chromosomes[99] = null;
-        }
-        */
+        // Generate up to 100 mutations while keeping population <= 100 and evaluations <= 100
+        // Note: This process relies on two assumptions, both of which have been approved by Dr. Nitschke via email (which can be made available on request)
+        // 1. We can swap in mutants for parents when they are generated
+        // 2. We can mutate a mutant that was generated in the current evolutionary process in this generation
+        for (int i = 0; i < populationSize; ++i) {
+            // We kill off the worst chromosome (making the assumption it will be bad for every landscape)
+            // and use its index to hold the mutant chromosome (this ensures population <= 100)
+            chromosomes[populationSize - 1] = null;
 
-        int g = modifiedSize -1;
-        for (int i = 0; i < chromosomes.length; ++i) {
-            int[] mutatedCityOrdering;
-            mutatedCityOrdering = chromosomes[0].mutate();
+            // Generate a mutated city ordering of the chromosome that is best suited for this landscape
+            int[] mutatedCityOrdering = chromosomes[0].mutate();
+            chromosomes[populationSize - 1] = new Chromosome(cities, mutatedCityOrdering);
 
-            // Generate a Chromosome - Temporarily storing 100 Chromosomes
-            chromosomes[99] = new Chromosome(cities, mutatedCityOrdering);
-
-            /*
-            // Get the worst chromosome
-            double highest_cost = Double.MIN_VALUE;
-            int lowest_index = -1;
-            for (int z = 0; z <= 0; ++z) {
-                if(highest_cost < chromosomes[z].getCost()) {
-                    lowest_index = z;
-                }
-            }
-            */
-
-            // Only use the mutation if we can get better than the current best chromosome
-            if (chromosomes[99].getCost() < chromosomes[0].getCost()) {
-                chromosomes[0] = chromosomes[99];
+            // If we get a mutant that is better than the best chromosome for this current landscape, we swap it in
+            // The reasoning behind this is that we know the landscape is dynamic, we therefore need one very good local optima for each landscape
+            // The other, worse, chromosomes may become good in the future generations so we don't want to modify them too much
+            if (chromosomes[populationSize - 1].getCost() < chromosomes[0].getCost()) {
+                chromosomes[0] = chromosomes[populationSize - 1];
             }
         }
     }

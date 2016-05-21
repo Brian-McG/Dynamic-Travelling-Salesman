@@ -54,7 +54,9 @@ class Chromosome {
 
 
     /**
-     * Mutates the Chromosome
+     * Mutates the Chromosome using inversion
+     *
+     * Randomly generates two different indices and then inverts the ordering of visiting those cities
      */
     public int[] mutate() {
         if(cityList.length <= 1) {
