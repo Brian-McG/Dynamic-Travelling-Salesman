@@ -1,6 +1,7 @@
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashSet;
+import java.util.IntSummaryStatistics;
 import java.util.Random;
+import java.util.Set;
 
 class Chromosome {
 
@@ -55,35 +56,40 @@ class Chromosome {
 
     /**
      * Mutates the Chromosome using inversion
-     *
+     * <p>
      * Randomly generates two different indices and then inverts the ordering of visiting those cities
      */
     public int[] mutate() {
-        if(cityList.length <= 1) {
+        // Add handling of singular city list
+        if (cityList.length <= 1) {
             int[] copy = new int[cityList.length];
-            System.arraycopy( cityList.clone(), 0, copy, 0, cityList.length );
+            System.arraycopy(cityList.clone(), 0, copy, 0, cityList.length);
             return copy;
         }
 
+        // Find two different indices of the cityList
         int x1 = random.nextInt(cityList.length);
         int x2;
         do {
             x2 = random.nextInt(cityList.length);
-        } while(x2 == x1);
+        } while (x2 == x1);
 
+        // Ensure that x1 < x2
         if (x1 > x2) {
             int tmp = x2;
             x2 = x1;
             x1 = tmp;
         }
 
-        int[] childChromosome = new int[cityList.length];
-        System.arraycopy( cityList, 0, childChromosome, 0, cityList.length );
+        // Make a copy of the existing cityList and swap apply the inversion between x1 and x2
+        int[] mutatedCityList = new int[cityList.length];
+        System.arraycopy(cityList, 0, mutatedCityList, 0, cityList.length);
         int g = x1;
         for (int i = x2; i >= x1; --i, ++g) {
-            childChromosome[g] = cityList[i];
+            mutatedCityList[g] = cityList[i];
         }
-        return childChromosome;
+
+        return mutatedCityList;
     }
 
     /**
