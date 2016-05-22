@@ -1,7 +1,4 @@
-import java.util.HashSet;
-import java.util.IntSummaryStatistics;
 import java.util.Random;
-import java.util.Set;
 
 class Chromosome {
 

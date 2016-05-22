@@ -4,6 +4,22 @@ Brian Mc George - MCGBRI004
 ## Result Comparison
 Jethro Muller - MULJET001
 
+## Prerequisites
+  - Java 8 (Java 7 **should** work too)
+
+## To run (in terminal)
+  - Change directory to the src folder
+  - javac TSP.java
+  - java TSP 100
+
+## Brian's Result Summary
+Average best fitness: 3767
+Best fitness: 3193
+
+## Jethro's Result Summary
+Average best fitness: 4148
+Best fitness: 3383
+
 ## Normality Tests
 Two different applications were used when determining normality, the online KS test provided in the slides (http://www.physics.csbsju.edu/cgi-bin/stats/KS-test.n.plot) and SPSS 23 (since I will likely use it for various statistical tasks in my Honours project)
 
@@ -23,7 +39,7 @@ We will reject Ho if the p-value < 0.05
 
 Tests of Normality
 |------|-----------------------------|---------------------|
-|      |Kolmogorov-Smirnova (a)          |Shapiro-Wilk     |
+|      |Kolmogorov-Smirnova (a)      |    Shapiro-Wilk     |
 |      |-------------------|---|-----|------------|---|----|
 |      |Statistic          |df |Sig. |Statistic   |df |Sig.|
 |------|-------------------|---|-----|------------|---|----|
@@ -34,7 +50,7 @@ Tests of Normality
  * This is a lower bound of the true significance.
  a Lilliefors Significance Correction
 
-Since the Sig. (p-value) for each test is > 0.05 we accept Ho and assume the datasets are normal.
+Since the Sig. (p-value) for each test is > 0.05 we accept Ho and assume the distribution of the datasets are normal.
 
 ## Two sampled t-tests
 Since the datasets passed the normality tests, we can run two sampled t-tests to determine if there is a statistically significant difference between the mean of the two datasets.
@@ -66,7 +82,7 @@ Since the Sig. (p-value) is < 0.05 for both SPSS and the online t-test, we rejec
 
 ## Discussion
 My approach only uses mutation where Jethro's uses crossover too. I do not feel crossover will be that beneficial for this problem space. Additionally, Jethro mutates the top 10 chromosomes where I focus exclusively on mutating the best chromosome.
-However, the likely major difference is I mutate a mutate if it is deemed better than the current best parent (confirmed to be allowed with Dr. Nitschke).
+However, the likely major difference is I mutate a mutate if it is deemed better than the current best parent (confirmed to be allowed by Dr. Nitschke).
 In addition, I change (at most) 4 chromosomes of the population in a generation. This is because I know the landscape is dynamic so what is good now may not be good for another landscape.
 I therefore try keep the majority of the other population around so that we can find a very good local optima for each landscape instead of lots of optima for a specific landscape which may change in the next generation.
 My approach also ensures that we evaluate at most 100 mutates in a generation and ensures that the population never exceeds 100 (even temporarily).
