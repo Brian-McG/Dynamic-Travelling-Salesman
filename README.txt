@@ -17,17 +17,17 @@ Average best fitness: 3767
 Best fitness: 3193
 
 ## Jethro's Result Summary
-Average best fitness: 4148
-Best fitness: 3383
+Average best fitness: 4461
+Best fitness: 3860
 
 ## Normality Tests
-Two different applications were used when determining normality, the online KS test provided in the slides (http://www.physics.csbsju.edu/cgi-bin/stats/KS-test.n.plot) and SPSS 23 (since I will likely use it for various statistical tasks in my Honours project)
+Two different applications were used when determining normality, the online KS test provided in the slides (http://www.physics.csbsju.edu/stats/KS-test.n.plot_form.html) and SPSS 23 (since I will likely use it for various statistical tasks in my Honours project)
 
 ### Online KS test
-#### Jethro
-KS finds the data is consistent with a normal distribution: P= 0.73 where the normal distribution has mean= 4138. and sdev= 264.1
 #### Brian
 KS finds the data is consistent with a normal distribution: P= 0.52 where the normal distribution has mean= 3753. and sdev= 193.0
+#### Jethro
+KS finds the data is consistent with a normal distribution: P= 0.80 where the normal distribution has mean= 4464. and sdev= 238.9
 
 ### SPSS
 SPSS runs both the KS test and Shapiro-Wilk tests. The documentation states that KS tests are best for large datasets while Shapiro-Wilk is better for datasets < 2000.
@@ -39,13 +39,13 @@ We will reject Ho if the p-value < 0.05
 
 Tests of Normality
 |------|-----------------------------|---------------------|
-|      |Kolmogorov-Smirnova (a)      |    Shapiro-Wilk     |
+|      |Kolmogorov-Smirnova (a)      |Shapiro-Wilk         |
 |      |-------------------|---|-----|------------|---|----|
 |      |Statistic          |df |Sig. |Statistic   |df |Sig.|
 |------|-------------------|---|-----|------------|---|----|
-|Jethro|.055               |100|.200*|.988        |100|.503|
-|------|-------------------|---|-----|------------|---|----|
 |Brian |.043               |100|.200*|.984        |100|.288|
+|------|-------------------|---|-----|------------|---|----|
+|Jethro|.060               |100|.200*|.987        |100|.433|
 |----------------------------------------------------------|
  * This is a lower bound of the true significance.
  a Lilliefors Significance Correction
@@ -60,29 +60,32 @@ Ho: The mean cost between the two datasets are the same
 Ha: The mean cost between the two datasets are different
 
 ### Online t-test
-t= 13.3
-sdev= 203.
+t= -25.2
+sdev= 195.
 degrees of freedom =198 The probability of this result, assuming the null hypothesis, is less than .0001
 
 ### SPSS
 Independent Samples Test
-|--------------------------------|--------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
-|                                |Levene's Test for Equality of Variances     |t-test for Equality of Means                                                                                                                 |
-|                                |---------------------------------------|----|----------------------------|-------|---------------|---------------|---------------------|--------------------------------------------------|
-|                                |F                                      |Sig.|t                           |df     |Sig. (2-tailed)|Mean Difference|Std. Error Difference|95% Confidence Interval of the Difference         |
-|                                |                                       |    |                            |       |               |               |                     |-----------------------------------------|--------|
-|                                |                                       |    |                            |       |               |               |                     |Lower                                    |Upper   |
-|----|---------------------------|---------------------------------------|----|----------------------------|-------|---------------|---------------|---------------------|-----------------------------------------|--------|
-|Cost|Equal variances assumed    |8.622                                  |.004|13.258                      |198    |.000           |380.4800       |28.6976              |323.8879                                 |437.0721|
-|    |---------------------------|---------------------------------------|----|----------------------------|-------|---------------|---------------|---------------------|-----------------------------------------|--------|
-|    |Equal variances not assumed|                                       |    |13.258                      |180.034|.000           |380.4800       |28.6976              |323.8531                                 |437.1069|
-|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|--------------------------------|--------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+|                                |Levene's Test for Equality of Variances     |t-test for Equality of Means                                                                                                                  |
+|                                |---------------------------------------|----|----------------------------|-------|---------------|---------------|---------------------|---------------------------------------------------|
+|                                |F                                      |Sig.|t                           |df     |Sig. (2-tailed)|Mean Difference|Std. Error Difference|95% Confidence Interval of the Difference          |
+|                                |                                       |    |                            |       |               |               |                     |-----------------------------------------|---------|
+|                                |                                       |    |                            |       |               |               |                     |Lower                                    |Upper    |
+|----|---------------------------|---------------------------------------|----|----------------------------|-------|---------------|---------------|---------------------|-----------------------------------------|---------|
+|Cost|Equal variances assumed    |7.620                                  |.006|-25.201                     |198    |.000           |-694.0000      |27.5384              |-748.3062                                |-639.6938|
+|    |---------------------------|---------------------------------------|----|----------------------------|-------|---------------|---------------|---------------------|-----------------------------------------|---------|
+|    |Equal variances not assumed|                                       |    |-25.201                     |185.725|.000           |-694.0000      |27.5384              |-748.3282                                |-639.6718|
+|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 
 Since the Sig. (p-value) is < 0.05 for both SPSS and the online t-test, we reject Ho and conclude that Brian's solution offers a significant reduction in cost over Jethro's solution.
 
 ## Discussion
-My approach only uses mutation where Jethro's uses crossover too. I do not feel crossover will be that beneficial for this problem space. Additionally, Jethro mutates the top 10 chromosomes where I focus exclusively on mutating the best chromosome.
-However, the likely major difference is I mutate a mutate if it is deemed better than the current best parent (confirmed to be allowed by Dr. Nitschke).
-In addition, I change (at most) 4 chromosomes of the population in a generation. This is because I know the landscape is dynamic so what is good now may not be good for another landscape.
-I therefore try keep the majority of the other population around so that we can find a very good local optima for each landscape instead of lots of optima for a specific landscape which may change in the next generation.
+My approach only uses mutation where Jethro's uses cut-and-crossfill between the best and a random chromosome between index 1 and 15 of the sorted list (inclusive).
+Those 100 children are then mutated using inversion. The best 100 of the children and parents are taken to the next generation.
+I do not feel crossover is that beneficial for this problem space.
+My approach is different, I focus on exploiting the best chromosome for the current landscape as much as possible.
+I therefore generate mutants from only the best chromosome, which may itself be a mutant created in the current evolutionary process, if it is deemed better than the current best parent (confirmed to be allowed by Dr. Nitschke).
+In addition, I only allow changes at 4 indices of the population in a generation. This is because I know the landscape is dynamic so what is good now may not be good when the landscape changes.
+I try keep the majority of the other population around so that I can find a very good local optima for each landscape instead of lots of optima for a specific landscape which may change in the next generation.
 My approach also ensures that we evaluate at most 100 mutates in a generation and ensures that the population never exceeds 100 (even temporarily).
