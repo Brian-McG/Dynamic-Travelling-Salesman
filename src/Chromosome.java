@@ -78,7 +78,7 @@ class Chromosome {
             x1 = tmp;
         }
 
-        // Make a copy of the existing cityList and swap apply the inversion between x1 and x2
+        // Make a copy of the existing cityList and apply the inversion between x1 and x2
         int[] mutatedCityList = new int[cityList.length];
         System.arraycopy(cityList, 0, mutatedCityList, 0, cityList.length);
         int g = x1;
