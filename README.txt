@@ -5,7 +5,7 @@ Brian Mc George - MCGBRI004
 Jethro Muller - MULJET001
 
 ## Prerequisites
-  - Java 8 (Java 7 **should** work too)
+  - Java 8 (if you want to use the provided class_files) or Java 7 (but you must compile the src yourself)
 
 ## To run (in terminal)
   - Change directory to the src folder
