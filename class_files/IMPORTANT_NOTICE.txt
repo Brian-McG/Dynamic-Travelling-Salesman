@@ -1,3 +1,0 @@
-It is not 100% clear why the .class files were requested for submission but they are JVM version specific. The submitted class files were created with Java 8 Update 91
-It is highly recommended to just compile the class files on your own machine. Instructions are in the README.
-Please contact me if any difficulties are experienced.
