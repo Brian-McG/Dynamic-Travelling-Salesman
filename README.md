@@ -85,11 +85,6 @@ Independent Samples Test
 Since the Sig. (p-value) is < 0.05 for both SPSS and the online t-test, we reject Ho and conclude that Brian's solution offers a significant reduction in cost over Jethro's solution.
 
 ## Discussion
-My approach only uses mutation where Jethro's uses cut-and-crossfill between the best and a random chromosome between index 1 and 15 of the sorted list (inclusive).</br>
-Those 100 children are then mutated using inversion. The best 100 of the children and parents are taken to the next generation.</br>
-I do not feel crossover is that beneficial for this problem space.</br>
-My approach is different, I focus on exploiting the best chromosome for the current landscape as much as possible.</br>
-I therefore generate mutants from only the best chromosome, which may itself be a mutant created in the current evolutionary process, if it is deemed better than the current best parent (confirmed to be allowed by Dr. Nitschke).</br>
-In addition, I only allow changes at 4 indices of the population in a generation. This is because I know the landscape is dynamic so what is good now may not be good when the landscape changes.</br>
-I try keep the majority of the other population around so that I can find a very good local optima for each landscape instead of lots of optima for a specific landscape which may change in the next generation.</br>
-My approach also ensures that we evaluate at most 100 mutates in a generation and ensures that the population never exceeds 100 (even temporarily).</br>
+My approach only uses mutation where Jethro's uses cut-and-crossfill between the best and a random chromosome between index 1 and 15 of the sorted list (inclusive). Those 100 children are then mutated using inversion. The best 100 of the children and parents are taken to the next generation. I do not feel crossover is that beneficial for this problem space. </br>
+
+My approach is different, I focus on exploiting the best chromosome for the current landscape as much as possible. I therefore generate mutants from only the best chromosome, which may itself be a mutant created in the current evolutionary process, if it is deemed better than the current best parent (confirmed to be allowed by Dr. Nitschke). In addition, I only allow changes at 4 indices of the population in a generation. This is because I know the landscape is dynamic so what is good now may not be good when the landscape changes. I try keep the majority of the other population around so that I can find a very good local optima for each landscape instead of lots of optima for a specific landscape which may change in the next generation. My approach also ensures that we evaluate at most 100 mutates in a generation and ensures that the population never exceeds 100 (even temporarily).
