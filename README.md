@@ -12,7 +12,7 @@ Jethro Muller - MULJET001
   2. ```javac TSP.java```
   3. ```java TSP 100```
 
-### Result Summary
+## Result Summary
 Lower fitness (distance in this case) is better.
 #### Brian
 Average best fitness: 3767</br>
